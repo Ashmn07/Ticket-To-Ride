@@ -6,11 +6,18 @@ import com.ashwin.tickettoride.converters.TrainCardConverter;
 import com.ashwin.tickettoride.enums.CardColor;
 import com.ashwin.tickettoride.enums.GameStatus;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.Lombok;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="games")
 public class Game {

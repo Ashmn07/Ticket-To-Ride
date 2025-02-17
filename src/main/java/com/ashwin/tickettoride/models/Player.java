@@ -5,10 +5,16 @@ import com.ashwin.tickettoride.converters.RouteCardConverter;
 import com.ashwin.tickettoride.converters.TrainCardConverter;
 import com.ashwin.tickettoride.enums.CardColor;
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity
 @Table(name="players")
 public class Player {
@@ -25,7 +31,7 @@ public class Player {
     private List<CardColor> trainCards = new ArrayList<>();
 
     @Convert(converter = RouteCardConverter.class)
-    private List<RouteCardConfig> routeCrads = new ArrayList<>();
+    private List<RouteCardConfig> routeCards = new ArrayList<>();
 
     @ManyToOne
     @JoinColumn(name="game_id")
