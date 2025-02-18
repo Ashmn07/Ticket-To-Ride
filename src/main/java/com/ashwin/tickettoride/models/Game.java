@@ -1,6 +1,7 @@
 package com.ashwin.tickettoride.models;
 
 import com.ashwin.tickettoride.config.RouteCardConfig;
+import com.ashwin.tickettoride.converters.FaceupCardConverter;
 import com.ashwin.tickettoride.converters.RouteCardConverter;
 import com.ashwin.tickettoride.converters.TrainCardConverter;
 import com.ashwin.tickettoride.enums.CardColor;
@@ -8,7 +9,6 @@ import com.ashwin.tickettoride.enums.GameStatus;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Lombok;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -35,11 +35,18 @@ public class Game {
     @Convert(converter = RouteCardConverter.class)
     private List<RouteCardConfig> routeCardDeck = new ArrayList<>();
 
+    @Convert(converter = FaceupCardConverter.class)
+    private List<CardColor> faceUpCards = new ArrayList<>();
+
     @OneToMany(mappedBy = "game", fetch = FetchType.LAZY)
     private List<Route> routes = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private GameStatus status = GameStatus.WAITING;
+
+    @ManyToOne
+    @JoinColumn(name = "current_player_id")
+    private Player currentPlayer;
 
     private int turnOrderIndex=0;
     private int actionsTakenThisTurn = 0;

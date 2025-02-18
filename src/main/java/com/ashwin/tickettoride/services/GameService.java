@@ -1,6 +1,7 @@
 package com.ashwin.tickettoride.services;
 
 import com.ashwin.tickettoride.config.RouteConfig;
+import com.ashwin.tickettoride.enums.GameStatus;
 import com.ashwin.tickettoride.models.Game;
 import com.ashwin.tickettoride.models.Player;
 import com.ashwin.tickettoride.models.Route;
@@ -38,9 +39,30 @@ public class GameService {
         player.setName(playerName);
         player.setGame(game);
         game.getPlayers().add(player);
+        game.setCurrentPlayer(player);
         initializeGameRoutes(game);
         return gameRepository.save(game);
     }
+
+    public Player joinGame(String gameId, String playerName) {
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new RuntimeException("Game not found"));
+        Player player = new Player();
+        player.setName(playerName);
+        player.setGame(game);
+        game.getPlayers().add(player);
+        gameRepository.save(game);
+        return player;
+    }
+
+    public void startGame(String gameId) {
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new RuntimeException("Game not found"));
+        if (!game.getPlayers().isEmpty()) {
+            game.setCurrentPlayer(game.getPlayers().get(0)); // Set the first player as the current player
+        }
+        game.setStatus(GameStatus.IN_PROGRESS);
+        gameRepository.save(game);
+    }
+
 
     private void initializeGameRoutes(Game game){
         List<RouteConfig> routeConfigs = routeConfigService.loadRoutes();
@@ -69,6 +91,8 @@ public class GameService {
                 .collect(Collectors.toList());
     }
 
+
+
     private PlayerSummary mapToPlayerSummary(Player player) {
         return new PlayerSummary(
                 player.getId(),
@@ -94,10 +118,17 @@ public class GameService {
         GameStateResponse response = new GameStateResponse();
         response.setId(game.getId());
         response.setStatus(game.getStatus());
+
         response.setPlayers(game.getPlayers().stream()
                 .map(this::mapToPlayerSummary)
                 .collect(Collectors.toList()));
-        response.setCurrentPlayerId(game.getCurrentPlayer().getId());
+
+        if (game.getCurrentPlayer() != null) {
+            response.setCurrentPlayerId(game.getCurrentPlayer().getId());
+        } else {
+            response.setCurrentPlayerId(null); // No current player
+        }
+
         response.setTrainCardDeckCount(game.getTrainCardDeck().size());
         response.setRouteCardDeckCount(game.getRouteCardDeck().size());
         response.setFaceUpCards(game.getFaceUpCards());

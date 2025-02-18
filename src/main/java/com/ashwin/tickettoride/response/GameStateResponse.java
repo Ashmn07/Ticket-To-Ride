@@ -1,5 +1,6 @@
 package com.ashwin.tickettoride.response;
 
+import com.ashwin.tickettoride.enums.CardColor;
 import com.ashwin.tickettoride.enums.GameStatus;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -17,6 +18,6 @@ public class GameStateResponse {
     private String currentPlayerId;
     private int trainCardDeckCount;
     private int routeCardDeckCount;
-    private List<String> faceUpCards;
+    private List<CardColor> faceUpCards;
     private List<RouteSummary> routes;
 }
